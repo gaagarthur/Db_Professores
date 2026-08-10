@@ -1,0 +1,118 @@
+{% if origin == "SIGEDUC" %}
+
+    <!-- 1. SIGEDUC Summary Metric Cards -->
+    {% if summary %}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+            <p class="text-sm font-medium text-gray-500">Servidores com Cargo de Professor</p>
+            <p class="text-2xl font-bold text-blue-600">{{ summary.total_professores }}</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+            <p class="text-sm font-medium text-gray-500">Professores Não Temporários</p>
+            <p class="text-2xl font-bold text-green-600">{{ summary.professores_nao_temporarios }}</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+            <p class="text-sm font-medium text-gray-500">Professores alocados em Sala de Aula</p>
+            <p class="text-2xl font-bold text-purple-600">{{ summary.professores_em_sala }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- 2. SIGEDUC Single Bar Chart -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Quantidade por Unidade Curricular</h3>
+        <!-- Chart Container (must have non-zero height!) -->
+        <div id="sigeduc-chart" class="w-full h-80"></div>
+    </div>
+
+    <script>
+    (function() {
+        const rawData = {{ chart_data | tojson }};
+        const chartDom = document.getElementById('sigeduc-chart');
+        const palette = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4', '#f97316', '#6366f1'];
+        
+        if (chartDom && Object.keys(rawData).length > 0) {
+            const myChart = echarts.init(chartDom);
+            
+            const option = {
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                color: palette,
+                grid: { left: '3%', right: '4%', bottom: '10%', containLabel: true },
+                xAxis: {
+                    type: 'category',
+                    data: Object.keys(rawData),
+                    axisLabel: { interval: 0, rotate: 25 }
+                },
+                yAxis: { type: 'value' },
+                series: [{
+                    name: 'Quantidade',
+                    type: 'bar',
+                    data: Object.values(rawData),
+                    colorBy: 'data',
+                    itemStyle: { borderRadius: [4, 4, 0, 0] }
+                }]
+            };
+
+            myChart.setOption(option);
+            window.addEventListener('resize', () => myChart.resize());
+        }
+    })();
+    </script>
+
+{% else %}
+
+    <!-- 3. INEP Grid of Bar Charts (One per Category) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {% for category, values in chart_data.items() %}
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">{{ category }}</h3>
+            <!-- Unique ID per category using loop.index -->
+            <div data-category="{{ category }}" class="inep-chart-container w-full h-72"></div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+    (function() {
+        const inepData = {{ chart_data | tojson }};
+        
+        // Find all chart containers rendered by Jinja
+        const containers = document.querySelectorAll('.inep-chart-container');
+
+        containers.forEach(container => {
+            // Retrieve the exact category name from the HTML element
+            const category = container.getAttribute('data-category');
+            const tuples = inepData[category];
+
+            if (tuples && tuples.length > 0) {
+                const myChart = echarts.init(container);
+                const palette = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#06b6d4', '#f97316', '#6366f1'];
+                const labels = tuples.map(item => item[0]);
+                const values = tuples.map(item => item[1]);
+
+                const option = {
+                    color: palette,
+                    tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                    grid: { left: '3%', right: '4%', bottom: '20%', containLabel: true },
+                    xAxis: {
+                        type: 'category',
+                        data: labels,
+                        axisLabel: { interval: 0, rotate: 30 }
+                    },
+                    yAxis: { type: 'value' },
+                    series: [{
+                        type: 'bar',
+                        data: values,
+                        colorBy: 'data',
+                        itemStyle: { borderRadius: [4, 4, 0, 0] }
+                    }]
+                };
+
+                myChart.setOption(option);
+                window.addEventListener('resize', () => myChart.resize());
+            }
+        });
+    })();
+    </script>
+
+{% endif %}

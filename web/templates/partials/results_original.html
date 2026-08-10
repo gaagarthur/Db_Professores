@@ -1,0 +1,23 @@
+<!-- Summary Metrics Card (SIGEDUC) -->
+{% if origin == "SIGEDUC" and summary %}
+<div class="grid grid-cols-3 gap-4">
+    <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+        <p class="text-sm font-medium text-gray-500">Servidores Cargo Professor</p>
+        <p class="text-2xl font-bold text-blue-600">{{ summary.total_professores }}</p>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+        <p class="text-sm font-medium text-gray-500">Professores Não Temporários</p>
+        <p class="text-2xl font-bold text-green-600">{{ summary.professores_nao_temporarios }}</p>
+    </div>
+    <div class="bg-white p-4 rounded-lg shadow border border-gray-100">
+        <p class="text-sm font-medium text-gray-500">Professores em Sala de Aula</p>
+        <p class="text-2xl font-bold text-purple-600">{{ summary.professores_em_sala }}</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Data Presentation Placeholder -->
+<div class="bg-white p-6 rounded-lg shadow border border-gray-100">
+    <h3 class="text-lg font-semibold mb-4 text-gray-800">Resultados da Busca</h3>
+    <pre class="bg-gray-50 p-4 rounded border text-sm text-gray-700 overflow-x-auto">{{ chart_data | tojson(indent=2) }}</pre>
+</div>
