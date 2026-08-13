@@ -7,6 +7,14 @@ DIRECs = ['01ª DIREC','02ª DIREC','03ª DIREC','04ª DIREC','05ª DIREC','06ª
 options_students = ['Fundamental','Médio', 'Médio Técnico/Profissional','EJA', 'Especial']
 options_professores = ['Fundamental','Médio', 'Médio Técnico/Profissional','EJA', 'Especial']
 
+
+Especiais = ["AEE","Professor de Educação Especial Intérprete/Tradutor de Libras","Professor de Educação Especial","AEE LIBRAS"]
+lookup_prof_perm = ["PROF PERM","ESPECIALISTA PERM NIVEL -"]
+prof_terms = ["PROF","ESPECIALISTA"]
+lookup_prof_temp = ["ESPECIALISTA DE EDUCACAO TEMPORARIO", "PROFESSOR TEMPORARIO"]
+
+
+
 INSTRUCTIONS =  '''
         1. Selecione em quais DIRECs você deseja buscar
         
