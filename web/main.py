@@ -66,3 +66,7 @@ def run_search(
             "chart_data": chart_data,
         },
     )
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
