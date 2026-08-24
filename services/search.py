@@ -77,6 +77,7 @@ def search_on_csv(file_path: str | None = None,Disciplinas: list[str]|None = Non
         "professores_nao_temporarios": prof_perm,
         "professores_temporarios": prof_temp,
         "professores_em_sala": prof_sala_direc,
+        "professores_special_ed": prof_especial,
     }
 
     #print(summary)
